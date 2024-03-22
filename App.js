@@ -1,28 +1,20 @@
-import React, { useState } from 'react'
-import { Button, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { MainNavigator } from './src/navigators/MainNavigator';
-import { NavigationContainer } from '@react-navigation/native';
+import "react-native-gesture-handler";
+import React, { useMemo, useRef, useState, useCallback } from 'react'
+import { Button, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
+import { TabNavigator } from './src/navigators/TabNavigator';
+import { DrawerNavigator } from "./src/navigators/DrawerNavigator";
 
 export default function App() {
-  const [personName, setPersonName] = useState('Camilo Pir');
-
-  const changeUserName = () => {
-    setPersonName("Brian Pir")
-    console.log(personName)
-  }
 
   return (
-
     <SafeAreaView style={styles.container}>
-      <NavigationContainer>
-        <MainNavigator />
-
-      </NavigationContainer>
       <StatusBar
         style='auto'
         backgroundColor='pink'
         translucent={true} />
+      {/* <TabNavigator /> */}
+      <DrawerNavigator></DrawerNavigator>
     </SafeAreaView>
   )
 }
@@ -30,20 +22,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "5e5e5e",
-    // justifyContent: "center",
-    // alignItems: "center"
+    justifyContent: "flex-start",
+
   },
-  // buttonStyle: {
-  //   borderRadius: 10,
-  //   // shadowColor: "black"
-  //   backgroundColor: "red",
-  //   padding: 10,
-  //   margin: 10,
-
-  // },
-  // textButtonStyle: {
-  //   color: "white"
-  // }
-
+ 
 });

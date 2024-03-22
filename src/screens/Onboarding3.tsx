@@ -1,64 +1,47 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ScreenIndicators } from "../components/ScreenIndicators";
-import PrimaryButton from "../components/PrimaryButton";
-import { RootStackScreenProps } from "../navigators/MainNavigator";
-import { INTRO_SCREEN_03 } from "../utils/constants";
+import React, { useState } from 'react';
+import { Button, Image, StyleSheet, View } from 'react-native';
+import ImagePicker, { ImagePickerResponse } from 'react-native-image-picker';
 
-export const Onboarding3 = ({
-  navigation,
-}: RootStackScreenProps<"Onboarding3">) => {
+interface ImagePickerProps {
+  onImageSelected: (imageUri: string) => void;
+}
+
+export const Onboarding3: React.FC<ImagePickerProps> = ({ onImageSelected }) => {
+  const [imageUri, setImageUri] = useState<string | null>(null);
+
+  const handleChooseImage = () => {
+    ImagePicker.showImagePicker({ mediaType: 'photo' }, (response: ImagePickerResponse) => {
+      if (response.didCancel) {
+        console.log('El usuario canceló la selección de imagen');
+      } else if (response.error) {
+        console.log('Error al seleccionar imagen:', response.error);
+      } else {
+        const source = { uri: response.uri };
+        setImageUri(source.uri);
+        onImageSelected(source.uri);
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <SafeAreaView>
-        <View style={styles.textSlide}>
-          <Text>{INTRO_SCREEN_03.title}</Text>
-          <Text>{INTRO_SCREEN_03.description}</Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton
-            label="Back"
-            onPress={() => navigation.replace("Onboarding1")}
-            style={styles.backButton}
-          />
-          <PrimaryButton
-            label="Next"
-            onPress={() => navigation.replace("Home")}
-            style={styles.nextButton}
-          />
-        </View>
-        <ScreenIndicators
-          count={3}
-          activeIndex={1}
-        />
-      </SafeAreaView>
+      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+      <Button title="Elegir imagen" onPress={handleChooseImage} />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
-  textSlide: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
     marginBottom: 20,
-  },
-  backButton: {
-    flex: 1,
-    marginRight: 5,
-  },
-  nextButton: {
-    flex: 1,
-    marginLeft: 5,
   },
 });

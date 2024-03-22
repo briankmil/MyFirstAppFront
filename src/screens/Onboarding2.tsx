@@ -1,33 +1,17 @@
 import React from "react";
-import { Text, StyleSheet, SafeAreaView, View } from "react-native";
+import { Text, StyleSheet, SafeAreaView, View, Image } from "react-native";
 import { ScreenIndicators } from "../components/ScreenIndicators";
 import PrimaryButton from "../components/PrimaryButton";
 import { RootStackScreenProps } from "../navigators/MainNavigator";
 import { INTRO_SCREEN_02 } from "../utils/constants";
+import { DrawerNavigator } from "../navigators/DrawerNavigator";
 export const Onboarding2 = ({ navigation }: RootStackScreenProps<"Onboarding2">) => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <View style={styles.textSlide}>
-          <Text>{INTRO_SCREEN_02.title}</Text>
-          <Text>{INTRO_SCREEN_02.description}</Text>
+      <View style={styles.shadow}>
+          <Image style={[styles.image, ]} source={require("../assets/images/JPEG/maquina2.jpg")} />
         </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton
-            label="Back"
-            onPress={() => navigation.replace("Onboarding1")}
-            style={styles.backButton}
-          />
-          <PrimaryButton
-            label="Next"
-            onPress={() => navigation.replace("Onboarding3")}
-            style={styles.nextButton}
-          />
-        </View>
-        <ScreenIndicators
-          count={3}
-          activeIndex={1}
-        />
       </SafeAreaView>
     </View>
   );
@@ -60,5 +44,26 @@ const styles = StyleSheet.create({
   },
   indicators: {
     marginBottom: 10,
+  },
+  shadow: {
+    marginTop: 20,
+    // alignItems: "center",
+    // justifyContent: "center",
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: .55,
+    // shadowRadius: 6.84,
+    // elevation: 5,
+  },
+  image: {
+    width: 370,
+    height: 600,
+    resizeMode: "cover",
+    alignSelf: "center",
+    borderRadius: 20,
+
   },
 });

@@ -1,6 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import React, { useEffect, useMemo, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+// import React, { useEffect, useMemo, useState } from "react";
+import * as React from 'react';
 import {
   Image,
   Modal,
@@ -10,213 +12,37 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { RadioGroup } from "react-native-radio-buttons-group";
+
 import { SafeAreaView } from "react-native-safe-area-context";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
 
-export const Home = () => {
-  // Declaración de variables y métodos para modificar su valor inicial
-  const [visibleModal, setVisibleModal] = useState(false);
-  const [departments, setDepartments] = useState([]);
-  const [departmentSelected, setDepartmentSelected] = useState("");
-  const [selectedIdRadioButton, setSelectedIdRadioButton] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-
-  const gender = useMemo(
-    () => [
-      {
-        id: "1",
-        label: "Femenino",
-        value: "Femenino",
-      },
-      {
-        id: "2",
-        label: "Masculino",
-        value: "Masculino",
-      },
-    ],
-    []
-  );
-
-  // Método para mostrar u ocultar el modal
-  const showModal = () => {
-    setVisibleModal(!visibleModal);
-    console.log(visibleModal);
-  };
-
-  // Hook de react que se ejecuta cuando se carga el componente
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
-  // Método para obtener los departamentos de la API
-  const fetchDepartments = async () => {
-    try {
-      const response = await fetch(
-        "https://www.datos.gov.co/resource/xdk5-pm3f.json"
-      );
-      const data = await response.json();
-      const departments = data.map(
-        (item_department) => item_department.departamento
-      );
-      const uniqueDepartments = [...new Set(departments)];
-      console.log(uniqueDepartments);
-      setDepartments(uniqueDepartments);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDataForm = async () => {
-    console.log(selectedIdRadioButton);
-    console.log(departmentSelected);
-    console.log(userName);
-    console.log(userEmail);
-
-    try {
-      const url = 'http://192.168.1.3:3000/api/v1/users/new-user';
-      const data = {
-        "user_name" : userName,
-        "user_email": userEmail,
-        "gender": selectedIdRadioButton,
-        "address": departmentSelected
-       }
-
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-        .then(response => {
-          if (!response.ok) {
-            console.log('Hubo un problema al crear el nuevo usuario.');
-          }
-          return response.json(); // Devuelve los datos del nuevo usuario creado por el servidor
-        })
-        .then(data => {
-          console.log('Nuevo usuario creado:', data);
-        })
-        .catch(error => {
-          console.log('Error:', error);
-        });
-
-    } catch (error) {
-      console.log(error);
-    }
-
-  };
-
+export const Home = () => {  
   return (
-    <View>
-      <SafeAreaView>
-        <Text>Home</Text>
-        <View style={styles.circleButtonContainer}>
-          <Pressable
-            onPress={showModal}
-            style={styles.circleButton}
-          >
-            <MaterialIcons
-              name="add"
-              size={24}
-              color="black"
-            />
-          </Pressable>
-        </View>
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={visibleModal}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.modalTitle}>Registro</Text>
-              <Pressable
-                onPress={showModal}
-                style={styles.closeModal}
-              >
-                <MaterialIcons
-                  name="close"
-                  size={18}
-                  color="black"
-                />
-              </Pressable>
-            </View>
-            <View style={styles.content}>
-              <View>
-                <Image
-                  source={require("../assets/images/png/logo.png")}
-                  style={styles.logo}
-                />
-              </View>
-              <TextInput
-                placeholder="Nombre"
-                value={userName}
-                onChangeText={(text) => setUserName(text)}
-                autoCapitalize="words"
-                autoCorrect={false}
-                style={styles.input}
-                keyboardType="default"
-              />
-
-              <TextInput
-                placeholder="Correo"
-                value={userEmail}
-                onChangeText={(text) => setUserEmail(text)}
-                autoCapitalize="words"
-                autoCorrect={false}
-                style={styles.input}
-                keyboardType="email-address"
-              />
-              <Text>Género:</Text>
-              <View style={styles.radioGroupStyle}>
-                <RadioGroup
-                  radioButtons={gender}
-                  selectedId={selectedIdRadioButton}
-                  onPress={(radioButtons) =>
-                    setSelectedIdRadioButton(radioButtons[0])
-                  }
-                />
-              </View>
-
-              <View style={styles.pickerContainer}>
-                <Text>Departamento:</Text>
-                <Picker
-                  selectedValue={departmentSelected}
-                  onValueChange={(itemValue) =>
-                    setDepartmentSelected(itemValue)
-                  }
-                  style={styles.picker}
-                >
-                  {departments.map((department, item_department) => (
-                    <Picker.Item
-                      key={item_department}
-                      label={department}
-                      value={department}
-                      color="#000"
-                      style={styles.pickerItemStyle}
-                    />
-                  ))}
-                </Picker>
-              </View>
-
-              <View style={styles.buttonSection}>
-                <Pressable
-                  onPress={handleDataForm}
-                  style={styles.sendButton}
-                >
-                  <Text>Enviar</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </Modal>
-      </SafeAreaView>
-    </View>
+        <NavigationContainer>
+          <Tab.Navigator>
+            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Settings" component={SettingsScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
   );
 };
+
+function HomeScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home!</Text>
+    </View>
+  );
+}
+
+function SettingsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Settings!</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   circleButtonContainer: {
